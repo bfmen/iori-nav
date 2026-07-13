@@ -67,7 +67,7 @@
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
 }
 
-/* 外部搜索预览：结构统一为纯文字 + 蓝色下划线，仅普通态文字颜色按风格区分 */
+/* 外部搜索预览：未配置标题颜色时保留各风格的默认文字颜色 */
 .home-live-preview:not(.uses-card-style-3) .search-engine-option {
   color: #111827 !important;
 }
@@ -362,7 +362,6 @@
 
 .home-live-preview .search-engine-option:hover,
 .home-live-preview.has-wallpaper .search-engine-option:hover {
-  color: #399dff !important;
   background: transparent !important;
   background-color: transparent !important;
 }
@@ -376,7 +375,7 @@
   color: #399dff !important;
   background: transparent !important;
   background-color: transparent !important;
-  font-weight: 400 !important;
+  font-weight: 500 !important;
   box-shadow: none !important;
   text-shadow: none !important;
 }

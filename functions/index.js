@@ -1,7 +1,7 @@
 // functions/index.js
 import { isAdminAuthenticated, getHomeCacheKey, clearHomeCacheDirty, markHomeCacheDirty, getHomeCacheDirtyValue } from './_middleware';
 import { FONT_MAP, HOME_CACHE_TTL } from './constants';
-import { escapeHTML, sanitizeUrl, normalizeSortOrder, getStyleStr } from './lib/utils';
+import { escapeHTML, sanitizeUrl, normalizeSortOrder, getStyleStr, sanitizeStyleColor } from './lib/utils';
 import { getSettingsKeys, parseSettings } from './lib/settings-parser';
 import { renderHorizontalMenu, renderVerticalMenu } from './lib/menu-renderer';
 import { renderSiteCards, renderEmptyState } from './lib/card-renderer';
@@ -483,12 +483,16 @@ export async function onRequest(context) {
   let customCardCss = '';
   const desktopCardTitleStyle = getStyleStr(S.card_title_size, S.card_title_color, S.card_title_font).replace('style="', '').replace('"', '');
   const mobileCardTitleStyle = getStyleStr(S.mobile_card_title_size, S.mobile_card_title_color, S.mobile_card_title_font).replace('style="', '').replace('"', '');
+  const desktopCardTitleColor = sanitizeStyleColor(S.card_title_color);
+  const mobileCardTitleColor = sanitizeStyleColor(S.mobile_card_title_color);
   const desktopCardDescStyle = getStyleStr(S.card_desc_size, S.card_desc_color, S.card_desc_font).replace('style="', '').replace('"', '');
   const mobileCardDescStyle = getStyleStr(S.mobile_card_desc_size, S.mobile_card_desc_color, S.mobile_card_desc_font).replace('style="', '').replace('"', '');
   if (desktopCardTitleStyle || mobileCardTitleStyle) {
     if (desktopCardTitleStyle) customCardCss += `@media (min-width: 768px) { .site-title { ${desktopCardTitleStyle} } }`;
     if (mobileCardTitleStyle) customCardCss += `@media (max-width: 767px) { .site-title { ${mobileCardTitleStyle} } }`;
   }
+  if (desktopCardTitleColor) customCardCss += `@media (min-width: 768px) { body { --desktop-card-title-color: ${desktopCardTitleColor}; } }`;
+  if (mobileCardTitleColor) customCardCss += `@media (max-width: 767px) { body { --mobile-card-title-color: ${mobileCardTitleColor}; } }`;
   if (desktopCardDescStyle || mobileCardDescStyle) {
     if (desktopCardDescStyle) customCardCss += `@media (min-width: 768px) { .site-card p { ${desktopCardDescStyle} } }`;
     if (mobileCardDescStyle) customCardCss += `@media (max-width: 767px) { .site-card p { ${mobileCardDescStyle} } }`;

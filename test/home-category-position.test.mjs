@@ -217,6 +217,17 @@ test('style three keeps the standard search engine set and order', async () => {
   assert.doesNotMatch(html, /data-engine="bing"/);
 });
 
+test('external search inherits desktop and mobile bookmark title colors', async () => {
+  const html = await renderHome([
+    { key: 'card_title_color', value: '#123456' },
+    { key: 'mobile_card_title_color', value: 'rgba(240, 240, 240, 0.9)' },
+  ]);
+
+  assert.match(html, /@media \(min-width: 768px\) \{ body \{ --desktop-card-title-color: #123456; \} \}/);
+  assert.match(html, /@media \(max-width: 767px\) \{ body \{ --mobile-card-title-color: rgba\(240, 240, 240, 0\.9\); \} \}/);
+  assert.doesNotMatch(html, /--desktop-card-title-(?:font|size)/);
+});
+
 test('home card radius and frosted blur preserve zero values', async () => {
   const html = await renderHome([
     { key: 'layout_card_border_radius', value: '0' },

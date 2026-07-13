@@ -246,9 +246,17 @@ test('style three CSS keeps the compact glass navigation treatment', () => {
   assert.match(css, /html\.dark body\.custom-wallpaper \.site-card\.style-3\.frosted-glass-effect/);
   assert.match(css, /body\.desktop-page-style3 \.home-search-shell/);
   assert.match(css, /body\.desktop-page-style3 footer/);
-  assert.match(css, /body\.mobile-page-style3 \.search-engine-option/);
+  assert.match(css, /body\.mobile-page-style3\s*\{[^}]*--search-engine-text-color/);
   assert.match(css, /body\.mobile-page-style3 \.home-search-shell/);
   assert.match(css, /body\.mobile-page-style3 footer/);
+});
+
+test('style three search focus suppresses the transient Tailwind ring', () => {
+  const css = readFileSync('public/css/style.css', 'utf8');
+
+  assert.match(css, /body\.desktop-page-style3 \.search-input-target,[\s\S]*?--tw-ring-offset-shadow:\s*0 0 #0000\s*!important;[\s\S]*?--tw-ring-shadow:\s*0 0 #0000\s*!important/);
+  assert.match(css, /body\.desktop-page-style3 \.search-input-target:focus,[\s\S]*?border-color:\s*transparent\s*!important;[\s\S]*?--tw-ring-shadow:\s*0 0 #0000\s*!important/);
+  assert.match(css, /body\.mobile-page-style3 \.search-input-target:focus,[\s\S]*?border-color:\s*transparent\s*!important;[\s\S]*?--tw-ring-shadow:\s*0 0 #0000\s*!important/);
 });
 
 test('style three top navigation keeps the single-line overflow menu available', () => {
@@ -273,19 +281,35 @@ test('style one and two top navigation aligns with the action row without changi
   assert.doesNotMatch(desktopAlignmentBlock, /\.nav-btn|background|border-radius|color/);
 });
 
-test('external search shares the style three interaction while preserving per-style base colors', () => {
+test('external search inherits bookmark title colors but keeps selected state blue', () => {
   const homeCss = readFileSync('public/css/style.css', 'utf8');
   const previewCss = readFileSync('public/css/admin-preview-controls.css', 'utf8');
 
-  assert.match(homeCss, /body:not\(\.desktop-page-style3\) \.search-engine-option\s*\{[^}]*color:\s*#111827\s*!important/);
-  assert.match(homeCss, /body\.desktop-page-style3 \.search-engine-option\s*\{[^}]*color:\s*rgba\(255, 255, 255, 0\.92\)\s*!important/);
+  assert.match(homeCss, /body:not\(\.desktop-page-style3\)\s*\{[^}]*--search-engine-text-color:\s*var\(--desktop-card-title-color, #111827\)/);
+  assert.match(homeCss, /body\.desktop-page-style3\s*\{[^}]*--search-engine-text-color:\s*var\(--desktop-card-title-color, rgba\(255, 255, 255, 0\.92\)\)/);
+  assert.match(homeCss, /body:not\(\.mobile-page-style3\)\s*\{[^}]*--search-engine-text-color:\s*var\(--mobile-card-title-color, #111827\)/);
+  assert.match(homeCss, /\.search-engine-option\s*\{[^}]*color:\s*var\(--search-engine-text-color, #111827\)\s*!important/);
   assert.match(homeCss, /\.search-engine-option\s*\{[^}]*border-radius:\s*0\s*!important;[^}]*background:\s*transparent\s*!important/);
   assert.match(homeCss, /\.search-engine-option::after\s*\{[^}]*background:\s*#399dff/);
+  // 默认态跟标题色，选中态固定强调蓝
   assert.match(homeCss, /body \.search-engine-option\.active\s*\{[^}]*color:\s*#399dff\s*!important;[^}]*background:\s*transparent\s*!important/);
   assert.match(previewCss, /\.home-live-preview:not\(\.uses-card-style-3\) \.search-engine-option\s*\{[^}]*color:\s*#111827\s*!important/);
   assert.match(previewCss, /\.home-live-preview\.uses-card-style-3 \.search-engine-option\s*\{[^}]*color:\s*rgba\(255, 255, 255, 0\.92\)\s*!important/);
   assert.match(previewCss, /\.home-live-preview \.search-engine-option,[\s\S]*?border-radius:\s*0\s*!important;[\s\S]*?background:\s*transparent\s*!important/);
   assert.match(previewCss, /\.home-live-preview \.search-engine-option\.active,[\s\S]*?color:\s*#399dff\s*!important;[\s\S]*?background:\s*transparent\s*!important/);
+});
+
+test('bookmark title settings explain and drive external search colors only', () => {
+  const html = readFileSync('public/admin/index.html', 'utf8');
+  const previewSource = readFileSync('public/js/admin-settings-preview-render.js', 'utf8');
+
+  assert.match(html, /书签标题样式[\s\S]*?颜色同时用于外部搜索文字/);
+  assert.match(html, /手机书签标题样式[\s\S]*?颜色同时用于手机外部搜索文字/);
+  assert.match(previewSource, /option\.style\.setProperty\('color', settings\.cardTitleColor, 'important'\)/);
+  assert.match(previewSource, /searchEngines\.querySelectorAll\('\.search-engine-option'\)/);
+  // 选中项不写标题色，交给 CSS 强调蓝
+  assert.match(previewSource, /classList\.contains\('active'\)[\s\S]*?removeProperty\('color'\)/);
+  assert.doesNotMatch(previewSource, /searchEngines\.style\.(?:fontFamily|fontSize)/);
 });
 
 test('home and admin preview use a sticky footer layout', () => {

@@ -300,7 +300,19 @@
       shared.applyTextStyle(description, settings.subtitleFont, settings.subtitleSize, settings.subtitleColor);
     }
 
-    if (searchEngines) searchEngines.style.display = settings.searchEngines ? 'flex' : 'none';
+    if (searchEngines) {
+      searchEngines.style.display = settings.searchEngines ? 'flex' : 'none';
+      searchEngines.querySelectorAll('.search-engine-option').forEach(option => {
+        // 选中态用 CSS 强调色，勿被书签标题色覆盖
+        if (option.classList.contains('active')) {
+          option.style.removeProperty('color');
+        } else if (settings.cardTitleColor) {
+          option.style.setProperty('color', settings.cardTitleColor, 'important');
+        } else {
+          option.style.removeProperty('color');
+        }
+      });
+    }
     if (adminIcon) adminIcon.style.display = settings.hideAdmin ? 'none' : '';
     if (sidebar) sidebar.style.display = (isHorizontal && !isMobilePreview) ? 'none' : '';
 

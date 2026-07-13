@@ -942,24 +942,24 @@ html.dark .site-card.style-3:not(.frosted-glass-effect) .site-title {
   border: 1px solid rgba(59, 130, 246, 0.4);
 }
 
-/* 外部搜索：所有卡片风格统一使用风格三的纯文字 + 蓝色下划线样式 */
+/* 外部搜索：统一使用纯文字 + 蓝色下划线，文字颜色跟随对应设备的书签标题设置 */
 @media (min-width: 768px) {
-  body:not(.desktop-page-style3) .search-engine-option {
-    color: #111827 !important;
+  body:not(.desktop-page-style3) {
+    --search-engine-text-color: var(--desktop-card-title-color, #111827);
   }
 
-  body.desktop-page-style3 .search-engine-option {
-    color: rgba(255, 255, 255, 0.92) !important;
+  body.desktop-page-style3 {
+    --search-engine-text-color: var(--desktop-card-title-color, rgba(255, 255, 255, 0.92));
   }
 }
 
 @media (max-width: 767px) {
-  body:not(.mobile-page-style3) .search-engine-option {
-    color: #111827 !important;
+  body:not(.mobile-page-style3) {
+    --search-engine-text-color: var(--mobile-card-title-color, #111827);
   }
 
-  body.mobile-page-style3 .search-engine-option {
-    color: rgba(255, 255, 255, 0.92) !important;
+  body.mobile-page-style3 {
+    --search-engine-text-color: var(--mobile-card-title-color, rgba(255, 255, 255, 0.92));
   }
 }
 
@@ -979,6 +979,7 @@ html.dark .site-card.style-3:not(.frosted-glass-effect) .site-title {
   font-size: 0.8rem !important;
   font-weight: 400 !important;
   line-height: 1.25rem !important;
+  color: var(--search-engine-text-color, #111827) !important;
   opacity: 1 !important;
   text-shadow: none !important;
   cursor: pointer;
@@ -997,14 +998,23 @@ html.dark .site-card.style-3:not(.frosted-glass-effect) .site-title {
   transition: width 0.25s ease;
 }
 
-body .search-engine-option:hover,
+body .search-engine-option:hover {
+  color: var(--search-engine-text-color, #111827) !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  font-weight: 400 !important;
+  text-shadow: none !important;
+}
+
 body .search-engine-option.active {
   color: #399dff !important;
   background: transparent !important;
   background-color: transparent !important;
   border: none !important;
   box-shadow: none !important;
-  font-weight: 400 !important;
+  font-weight: 500 !important;
   text-shadow: none !important;
 }
 
@@ -1069,17 +1079,23 @@ body .search-engine-option.active {
     background: rgba(179, 183, 184, 0.23) !important;
     color: rgba(255, 255, 255, 0.96) !important;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12) !important;
+    --tw-ring-offset-shadow: 0 0 #0000 !important;
+    --tw-ring-shadow: 0 0 #0000 !important;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     font-size: 1.15rem !important;
     font-weight: 400;
+    outline: none !important;
   }
 
   body.desktop-page-style3 .search-input-target:focus,
   body.desktop-page-style3.custom-wallpaper .search-input-target:focus,
   html.dark body.desktop-page-style3 .search-input-target:focus {
     background: rgba(179, 183, 184, 0.3) !important;
+    border-color: transparent !important;
     box-shadow: 0 6px 24px rgba(0, 0, 0, 0.16) !important;
+    --tw-ring-offset-shadow: 0 0 #0000 !important;
+    --tw-ring-shadow: 0 0 #0000 !important;
     outline: none !important;
   }
 
@@ -1175,8 +1191,9 @@ body .search-engine-option.active {
 
   body.desktop-page-style3 .nav-btn.active,
   body.desktop-page-style3.custom-wallpaper .nav-btn.active,
-  html.dark body.desktop-page-style3 .nav-btn.active {
-    color: #ffffff !important;
+  html.dark body.desktop-page-style3 .nav-btn.active,
+  html.dark body.desktop-page-style3.custom-wallpaper .nav-btn.active {
+    color: #399dff !important;
     background: transparent !important;
     background-color: transparent !important;
     box-shadow: none !important;
@@ -1337,9 +1354,21 @@ body .search-engine-option.active {
     background: rgba(179, 183, 184, 0.23) !important;
     color: rgba(255, 255, 255, 0.96) !important;
     box-shadow: 0 4px 18px rgba(0, 0, 0, 0.12) !important;
+    --tw-ring-offset-shadow: 0 0 #0000 !important;
+    --tw-ring-shadow: 0 0 #0000 !important;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     font-size: 1rem !important;
+    outline: none !important;
+  }
+
+  body.mobile-page-style3 .search-input-target:focus,
+  body.mobile-page-style3.custom-wallpaper .search-input-target:focus,
+  html.dark body.mobile-page-style3 .search-input-target:focus {
+    border-color: transparent !important;
+    --tw-ring-offset-shadow: 0 0 #0000 !important;
+    --tw-ring-shadow: 0 0 #0000 !important;
+    outline: none !important;
   }
 
   body.mobile-page-style3 .search-input-target::placeholder,
@@ -1410,8 +1439,11 @@ body .search-engine-option.active {
     background: transparent !important;
   }
 
-  body.mobile-page-style3 .nav-btn.active {
-    color: #ffffff !important;
+  body.mobile-page-style3 .nav-btn.active,
+  body.mobile-page-style3.custom-wallpaper .nav-btn.active,
+  html.dark body.mobile-page-style3 .nav-btn.active,
+  html.dark body.mobile-page-style3.custom-wallpaper .nav-btn.active {
+    color: #399dff !important;
     background: transparent !important;
     font-weight: 500 !important;
   }
